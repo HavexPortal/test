@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Havex Clothing Store - Purchasing Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Public+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-light: #f4e4a6;
+            --gold-dark: #9b7e2e;
+            --black: #0a0a0a;
+            --black-light: #1a1a1a;
+            --white: #ffffff;
+            --white-off: #f8f9fa;
+            --gray: #333333;
+            --gray-light: #666666;
+            --success: #28a745;
+            --error: #dc3545;
+            --border-radius: 10px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            line-height: 1.6;
+            min-height: 100vh;
+            font-family: 'Public Sans', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                var(--black) 0%, 
+                var(--black-light) 50%, 
+                var(--black) 100%);
+        }
+        
+        /* Grid Pattern */
+        .grid-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+        
+        @keyframes gridMove {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(50px, 50px);
+            }
+        }
+        
+        /* Gold Bubbles Container */
+        .gold-bubbles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Static background bubbles */
+        .static-bubble {
+            position: absolute;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(212, 175, 55, 0.6), 
+                rgba(212, 175, 55, 0.2));
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            pointer-events: none;
+            animation: gentleFloat 25s infinite ease-in-out;
+        }
+        
+        /* Animation for static bubbles */
+        @keyframes gentleFloat {
+            0%, 100% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-20px) translateX(10px) rotate(90deg);
+            }
+            50% {
+                transform: translateY(-40px) translateX(-10px) rotate(180deg);
+            }
+            75% {
+                transform: translateY(-20px) translateX(-5px) rotate(270deg);
+            }
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 35px;
+            background: rgba(26, 26, 26, 0.85);
+            color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: 2px solid var(--gold);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--gold), 
+                transparent);
+        }
+        
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.2rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+        
+        header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 400;
+            color: var(--white-off);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--gold);
+            color: var(--white);
+            font-weight: 600;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 15px;
+            color: var(--gold);
+            font-size: 1.5rem;
+        }
+        
+        .form-section {
+            background-color: rgba(26, 26, 26, 0.9);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            border: 2px solid var(--gold);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .form-section:hover {
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--white-off);
+            font-size: 1.05rem;
+            transition: color 0.3s;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.5px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(51, 51, 51, 0.8);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            color: var(--white);
+            font-family: 'Public Sans', sans-serif;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2);
+            background-color: rgba(51, 51, 51, 1);
+            transform: translateY(-3px);
+        }
+        
+        .field-filled {
+            border-color: var(--gold);
+            background-color: rgba(51, 51, 51, 1);
+            animation: fieldGlow 1s ease-out;
+        }
+        
+        @keyframes fieldGlow {
+            0% {
+                box-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+            }
+            100% {
+                box-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
+            }
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .form-col {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 200px;
+        }
+        
+        .required::after {
+            content: " *";
+            color: var(--gold);
+            font-weight: 800;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--black);
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            width: 100%;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.4), 
+                transparent);
+            transition: left 0.7s;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+            letter-spacing: 2px;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:active {
+            transform: translateY(-2px);
+        }
+        
+        .btn-loading {
+            position: relative;
+            color: transparent;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 24px;
+            height: 24px;
+            margin: -12px 0 0 -12px;
+            border: 3px solid rgba(0, 0, 0, 0.3);
+            border-top-color: var(--black);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .message {
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            text-align: center;
+            display: none;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 2px solid;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success {
+            background-color: rgba(40, 167, 69, 0.15);
+            color: #9ae6b4;
+            border-color: #68d391;
+        }
+        
+        .error {
+            background-color: rgba(220, 53, 69, 0.15);
+            color: #fc8181;
+            border-color: #fc8181;
+        }
+        
+        .order-id {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin: 20px 0;
+            padding: 20px;
+            background-color: rgba(212, 175, 55, 0.1);
+            border-radius: var(--border-radius);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            text-align: center;
+            letter-spacing: 1px;
+            animation: pulseGold 2s infinite;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        @keyframes pulseGold {
+            0% {
+                box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
+            }
+            100% {
+                box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            }
+        }
+        
+        /* Success Animation */
+        .success-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        
+        .success-animation.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .success-checkmark {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .check-icon {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            border-radius: 50%;
+            box-sizing: content-box;
+            border: 4px solid var(--gold);
+        }
+        
+        .check-icon::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            animation: ripple 2s infinite;
+        }
+        
+        .icon-line {
+            height: 5px;
+            background-color: var(--gold);
+            display: block;
+            border-radius: 2px;
+            position: absolute;
+            z-index: 10;
+        }
+        
+        .icon-line.line-tip {
+            top: 58px;
+            left: 24px;
+            width: 30px;
+            transform: rotate(45deg);
+            animation: icon-line-tip 0.75s;
+        }
+        
+        .icon-line.line-long {
+            top: 52px;
+            right: 24px;
+            width: 60px;
+            transform: rotate(-45deg);
+            animation: icon-line-long 0.75s;
+        }
+        
+        .success-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            color: var(--white);
+            text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .success-message {
+            font-size: 1.3rem;
+            color: var(--white-off);
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+        
+        .close-success {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--black);
+            border: none;
+            padding: 16px 45px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: var(--transition);
+        }
+        
+        .close-success:hover {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .config-summary {
+            background-color: rgba(51, 51, 51, 0.6);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin-top: 25px;
+            border-left: 5px solid var(--gold);
+            transition: var(--transition);
+        }
+
+        .config-summary:hover {
+            background-color: rgba(51, 51, 51, 0.8);
+            transform: translateX(5px);
+        }
+
+        .config-summary h3 {
+            margin-bottom: 20px;
+            color: var(--gold);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .config-summary h3 i {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .config-item:last-child {
+            border-bottom: none;
+        }
+
+        .config-label {
+            font-weight: 600;
+            width: 120px;
+            color: var(--white-off);
+        }
+        
+        .config-value {
+            color: var(--gold);
+            font-weight: 500;
+            text-align: right;
+            flex-grow: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--gray-light);
+            font-size: 0.9rem;
+            padding: 25px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .footer-highlight {
+            color: var(--gold);
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .form-col {
+                flex: 100%;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+                letter-spacing: 1px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .form-section {
+                padding: 25px;
+            }
+            
+            .success-text {
+                font-size: 2.2rem;
+            }
+            
+            .config-item {
+                flex-direction: column;
+            }
+            
+            .config-label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .config-value {
+                text-align: left;
+            }
+        }
+
+        /* Animation keyframes */
+        @keyframes icon-line-tip {
+            0% {
+                width: 0;
+                left: 10px;
+                top: 48px;
+            }
+            54% {
+                width: 0;
+                left: 10px;
+                top: 48px;
+            }
+            70% {
+                width: 30px;
+                left: 24px;
+                top: 58px;
+            }
+            84% {
+                width: 30px;
+                left: 24px;
+                top: 58px;
+            }
+            100% {
+                width: 30px;
+                left: 24px;
+                top: 58px;
+            }
+        }
+        
+        @keyframes icon-line-long {
+            0% {
+                width: 0;
+                right: 46px;
+                top: 38px;
+            }
+            65% {
+                width: 0;
+                right: 46px;
+                top: 38px;
+            }
+            84% {
+                width: 60px;
+                right: 24px;
+                top: 52px;
+            }
+            100% {
+                width: 60px;
+                right: 24px;
+                top: 52px;
+            }
+        }
+        
+        @keyframes ripple {
+            0% {
+                border: 4px solid rgba(212, 175, 55, 0.5);
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                border: 2px solid rgba(212, 175, 55, 0);
+                transform: translate(-50%, -50%) scale(1.3);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background with Gold Bubbles -->
+    <div class="animated-bg">
+        <div class="bg-gradient"></div>
+        <div class="grid-pattern"></div>
+        <div class="gold-bubbles">
+            <!-- Static background bubbles -->
+            <div class="static-bubble" style="width: 80px; height: 80px; top: 10%; left: 15%; animation-delay: 0s;"></div>
+            <div class="static-bubble" style="width: 120px; height: 120px; top: 70%; left: 80%; animation-delay: 2s;"></div>
+            <div class="static-bubble" style="width: 60px; height: 60px; top: 40%; left: 60%; animation-delay: 4s;"></div>
+            <div class="static-bubble" style="width: 100px; height: 100px; top: 80%; left: 20%; animation-delay: 6s;"></div>
+            <div class="static-bubble" style="width: 70px; height: 70px; top: 20%; left: 85%; animation-delay: 8s;"></div>
+        </div>
+    </div>
+    
+    <!-- Success Animation Overlay -->
+    <div class="success-animation" id="successAnimation">
+        <div class="success-checkmark">
+            <div class="check-icon">
+                <span class="icon-line line-tip"></span>
+                <span class="icon-line line-long"></span>
+            </div>
+        </div>
+        <div class="success-text">Order Confirmed!</div>
+        <div class="success-message" id="successMessage">
+            Your order has been successfully placed.<br>
+            We will notify you if there are any issues with your order.
+        </div>
+        <button class="close-success" onclick="closeSuccessAnimation()">Continue</button>
+    </div>
+    
+    <div class="container">
+        <header>
+            <h1>HAVEX CLOTHING STORE</h1>
+            <p>Purchasing Portal - Configure your product and provide delivery information</p>
+        </header>
+        
+        <div class="form-section">
+            <h2 class="section-title">
+                <i class="fas fa-cogs"></i>Product Configuration
+            </h2>
+            
+            <form id="configForm">
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="color" class="required">Color</label>
+                            <select id="color" name="color" required>
+                                <option value="">Select Color</option>
+                                <option value="Black">Black</option>
+                                <option value="White">White</option>
+                                <option value="Navy">Navy</option>
+                                <option value="Gray">Gray</option>
+                                <option value="Burgundy">Burgundy</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="size" class="required">Size</label>
+                            <select id="size" name="size" required>
+                                <option value="">Select Size</option>
+                                <option value="S">Small (S)</option>
+                                <option value="M">Medium (M)</option>
+                                <option value="L">Large (L)</option>
+                                <option value="XL">Extra Large (XL)</option>
+                                <option value="XXL">Double Extra Large (XXL)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quantity" class="required">Quantity</label>
+                    <input type="number" id="quantity" name="quantity" min="1" max="10" value="1" required>
+                </div>
+
+                <div class="config-summary">
+                    <h3><i class="fas fa-clipboard-check"></i>Configuration Summary</h3>
+                    <div class="config-item">
+                        <span class="config-label">Color:</span>
+                        <span class="config-value" id="summary-color">Not selected</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Size:</span>
+                        <span class="config-value" id="summary-size">Not selected</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Quantity:</span>
+                        <span class="config-value" id="summary-quantity">1</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="form-section">
+            <h2 class="section-title">
+                <i class="fas fa-shipping-fast"></i>Delivery Information
+            </h2>
+            
+            <div id="message" class="message"></div>
+            
+            <form id="deliveryForm">
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="firstName" class="required">First Name</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="lastName" class="required">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="required">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone" class="required">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address" class="required">Delivery Address</label>
+                    <textarea id="address" name="address" rows="3" required placeholder="Street address, apartment, suite, etc."></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="city" class="required">City</label>
+                            <input type="text" id="city" name="city" required>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="zipCode" class="required">ZIP/Postal Code</label>
+                            <input type="text" id="zipCode" name="zipCode" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="country" class="required">Country</label>
+                    <select id="country" name="country" required>
+                        <option value="">Select Country</option>
+                        <option value="Sri Lanka">Sri Lanka</option>
+                        <option value="India">India</option>
+                        <option value="United States">United States</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Additional Notes</label>
+                    <textarea id="notes" name="notes" rows="3" placeholder="Any special instructions for delivery..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-shopping-bag" style="margin-right: 10px;"></i>Complete Purchase
+                </button>
+            </form>
+        </div>
+        
+        <footer>
+            <p>Your information is secure and will only be used for delivery purposes.</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">
+                <span class="footer-highlight">Havex Clothing Store</span> © 2023 | Premium Fashion & Style
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Configuration form updates
+        document.getElementById('color').addEventListener('change', updateConfigSummary);
+        document.getElementById('size').addEventListener('change', updateConfigSummary);
+        document.getElementById('quantity').addEventListener('input', updateConfigSummary);
+        
+        // Add field animations when data is entered
+        document.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    this.classList.add('field-filled');
+                } else {
+                    this.classList.remove('field-filled');
+                }
+            });
+            
+            field.addEventListener('change', function() {
+                if (this.value.trim() !== '') {
+                    this.classList.add('field-filled');
+                } else {
+                    this.classList.remove('field-filled');
+                }
+            });
+            
+            // Initialize with any pre-filled values
+            if (field.value.trim() !== '') {
+                field.classList.add('field-filled');
+            }
+        });
+        
+        function updateConfigSummary() {
+            document.getElementById('summary-color').textContent = document.getElementById('color').value || 'Not selected';
+            document.getElementById('summary-size').textContent = document.getElementById('size').value || 'Not selected';
+            document.getElementById('summary-quantity').textContent = document.getElementById('quantity').value;
+        }
+        
+        // Initialize summary
+        updateConfigSummary();
+        
+        // Form submission handler - FIXED
+        document.getElementById('deliveryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submission started'); // Debug log
+            
+            // Validate configuration first
+            const color = document.getElementById('color').value;
+            const size = document.getElementById('size').value;
+            const quantity = document.getElementById('quantity').value;
+            
+            if (!color || !size || !quantity) {
+                showMessage('Please complete the product configuration first.', 'error');
+                return;
+            }
+            
+            // Validate delivery form
+            if (!validateForm()) {
+                return;
+            }
+            
+            // Get form data
+            const configData = new FormData(document.getElementById('configForm'));
+            const deliveryData = new FormData(this);
+            const data = {};
+            
+            // Combine both forms data
+            configData.forEach((value, key) => {
+                data[key] = value;
+            });
+            
+            deliveryData.forEach((value, key) => {
+                data[key] = value;
+            });
+            
+            // Add timestamp and generate order ID
+            data.timestamp = new Date().toISOString();
+            const orderId = generateOrderId();
+            data.orderId = orderId;
+            
+            console.log('Order ID generated:', orderId); // Debug log
+            
+            // Show loading state
+            const submitBtn = document.querySelector('#deliveryForm button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.classList.add('btn-loading');
+            submitBtn.disabled = true;
+            
+            // Add animation to the entire form
+            const formSection = document.querySelector('.form-section:last-child');
+            formSection.style.transform = 'scale(0.98)';
+            
+            // Simulate API call (https://script.google.com/macros/s/AKfycbzCmOuT_kKMMuU1UMe1iDTCk8tvfwzTTbUgQM0FhRPJ6P4JivCJwmwsy4MrhYak62Np/exec)
+            setTimeout(() => {
+                console.log('Processing order...'); // Debug log
+                
+                // For demo - simulate success
+                showSuccessAnimation(orderId);
+                document.getElementById('deliveryForm').reset();
+                document.getElementById('configForm').reset();
+                updateConfigSummary();
+                resetButtonState(submitBtn, originalText);
+                formSection.style.transform = 'scale(1)';
+                
+                // Reset field styling
+                document.querySelectorAll('input, select, textarea').forEach(field => {
+                    field.classList.remove('field-filled');
+                });
+                
+                console.log('Order processed successfully'); // Debug log
+                
+            }, 1500); // Simulated delay for demo
+        });
+        
+        // Form validation
+        function validateForm() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const zipCode = document.getElementById('zipCode').value.trim();
+            const country = document.getElementById('country').value;
+            
+            if (!firstName || !lastName || !email || !phone || !address || !city || !zipCode || !country) {
+                showMessage('Please fill in all required fields marked with *.', 'error');
+                return false;
+            }
+            
+            // Basic email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showMessage('Please enter a valid email address.', 'error');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function showSuccessAnimation(orderId) {
+            console.log('Showing success animation with order ID:', orderId); // Debug log
+            const successAnimation = document.getElementById('successAnimation');
+            const successMessage = document.getElementById('successMessage');
+            successMessage.innerHTML = `
+                Your order has been successfully placed!<br><br>
+                <div class="order-id">Order ID: ${orderId}</div><br>
+                Please save this order ID for future reference.<br>
+                We will notify you if there are any issues with your order.
+            `;
+            successAnimation.classList.add('active');
+        }
+        
+        function closeSuccessAnimation() {
+            const successAnimation = document.getElementById('successAnimation');
+            successAnimation.classList.remove('active');
+            
+            // Show a success message in the form as well
+            const orderIdElement = document.querySelector('.success-message .order-id');
+            if (orderIdElement) {
+                const orderId = orderIdElement.textContent.replace('Order ID: ', '');
+                const message = `
+                    Your order is confirmed!<br><br>
+                    <div class="order-id">${orderIdElement.textContent}</div><br>
+                    If we see any mistake in your order we will inform you.<br>
+                    Thank you for your purchase!
+                `;
+                showMessage(message, 'success');
+            }
+        }
+        
+        function resetButtonState(button, originalContent) {
+            button.classList.remove('btn-loading');
+            button.innerHTML = originalContent;
+            button.disabled = false;
+        }
+        
+        function generateOrderId() {
+            const timestamp = Date.now().toString().slice(-6);
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const randomChar = chars.charAt(Math.floor(Math.random() * chars.length));
+            return `HAVEX-${timestamp}${random}${randomChar}`;
+        }
+        
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.innerHTML = text;
+            messageEl.className = 'message ' + type;
+            messageEl.style.display = 'block';
+            
+            // Scroll to message
+            messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Hide message after 10 seconds for success (to let user note order ID)
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 10000);
+            } else {
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // Create interactive gold particles on click
+        document.addEventListener('click', function(e) {
+            // Don't create particles when clicking form elements or buttons
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || 
+                e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' ||
+                e.target.closest('.form-section') || e.target.closest('header') ||
+                e.target.closest('.success-animation')) {
+                return;
+            }
+            
+            createGoldParticle(e.clientX, e.clientY);
+        });
+        
+        function createGoldParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.width = '20px';
+            particle.style.height = '20px';
+            particle.style.left = `${x - 10}px`;
+            particle.style.top = `${y - 10}px`;
+            particle.style.background = 'radial-gradient(circle, rgba(212, 175, 55, 0.9), rgba(212, 175, 55, 0.2))';
+            particle.style.borderRadius = '50%';
+            particle.style.boxShadow = '0 0 10px rgba(212, 175, 55, 0.5)';
+            particle.style.pointerEvents = 'none';
+            particle.style.zIndex = '1';
+            
+            document.body.appendChild(particle);
+            
+            // Animate the particle
+            const animation = particle.animate([
+                { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                { transform: `translate(${Math.random() * 100 - 50}px, -100px) scale(0)`, opacity: 0 }
+            ], {
+                duration: 2000,
+                easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
+            });
+            
+            // Remove particle after animation
+            animation.onfinish = () => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            };
+        }
+    </script>
+</body>
+</html>
